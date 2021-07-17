@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">CoinStats</string>
+
+    <!--  Home Screen  -->
+    <string name="coins_fragment_tab_text">Coins</string>
+    <string name="favorites_fragment_tab_text">Favorites</string>
+
+    <!--  Coins Screen  -->
+    <string name="coin_change_in_24_hours_template">%1$s%%</string>
+    <string name="coin_price_template">$%1$s</string>
+    <string name="coin_name_title">Name</string>
+    <string name="coin_24h_title">24h</string>
+    <string name="coin_price_title">Price</string>
 </resources>
