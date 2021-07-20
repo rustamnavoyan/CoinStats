@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import com.rustamnavoyan.coinstats.R
-import com.rustamnavoyan.coinstats.ui.model.CoinItem
+import com.rustamnavoyan.coinstats.ui.model.CoinUiModel
 
 class CoinAdapter : Adapter<CoinAdapter.ViewHolder>() {
 
-    private val _items: MutableList<CoinItem> = ArrayList()
-    var items: List<CoinItem>
+    private val _items: MutableList<CoinUiModel> = ArrayList()
+    var items: List<CoinUiModel>
         get() = _items
         set(values) {
             _items.clear()
@@ -44,7 +44,7 @@ class CoinAdapter : Adapter<CoinAdapter.ViewHolder>() {
         private val changeIn24HoursStatusIcon: ImageView by lazy { itemView.findViewById(R.id.coin_change_in_24_hours_status_icon) }
         private val price: TextView by lazy { itemView.findViewById(R.id.coin_price) }
 
-        fun bind(item: CoinItem) {
+        fun bind(item: CoinUiModel) {
             Glide.with(icon).load(item.iconUrl).into(icon)
             name.text = item.name
             changeIn24Hours.text = itemView.context.getString(
