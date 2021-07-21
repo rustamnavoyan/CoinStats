@@ -3,16 +3,23 @@ package com.rustamnavoyan.coinstats.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.rustamnavoyan.coinstats.data.model.CoinRealmDataModel
 import com.rustamnavoyan.coinstats.domain.UseCaseExecutor
 import com.rustamnavoyan.coinstats.domain.usecase.GetCoinsUseCase
-import com.rustamnavoyan.coinstats.data.model.CoinDataModel
+import com.rustamnavoyan.coinstats.viewmodel.mapper.CoinRealmResultsToDataModelMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.realm.Realm
+import io.realm.kotlin.where
 import javax.inject.Inject
+
+private const val COINS_SORT_FIELD = "id"
 
 @HiltViewModel
 class CoinsViewModel @Inject constructor(
     private val getCoinsUseCase: GetCoinsUseCase,
-    private val useCaseExecutor: UseCaseExecutor
+    private val useCaseExecutor: UseCaseExecutor,
+    private val realm: Realm,
+    private val coinRealmResultsToDataModelMapper: CoinRealmResultsToDataModelMapper,
 ) : ViewModel() {
 
     private var _coinsViewState = MutableLiveData<CoinsViewState>().apply {
@@ -21,16 +28,24 @@ class CoinsViewModel @Inject constructor(
     val coinsViewState: LiveData<CoinsViewState>
         get() = _coinsViewState
 
-    fun onViewCreated() {
-        useCaseExecutor.execute(
-            useCase = getCoinsUseCase,
-            callback = this::handleResult
-        )
+    init {
+        registerRealmChangeListener()
     }
 
-    private fun handleResult(coins: List<CoinDataModel>) {
-        _coinsViewState.apply {
-            value = value?.copy(isLoading = false, coins = coins)
-        }
+    fun onViewCreated() {
+        useCaseExecutor.execute(useCase = getCoinsUseCase)
+    }
+
+    private fun registerRealmChangeListener() {
+        realm.where<CoinRealmDataModel>()
+            .findAllAsync().addChangeListener { coins ->
+                coins.sort(COINS_SORT_FIELD)
+                _coinsViewState.apply {
+                    value = value?.copy(
+                        isLoading = false,
+                        coins = coinRealmResultsToDataModelMapper.toData(coins)
+                    )
+                }
+            }
     }
 }
