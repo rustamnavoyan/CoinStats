@@ -15,6 +15,10 @@ class CoinsFragment : CoinsFragmentBase() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.onViewCreated()
 
+        coinAdapter.itemClickListener = { coin ->
+            viewModel.toggleFavorite(coin.name)
+        }
+
         viewModel.coinsViewState.observe(
             viewLifecycleOwner,
             { viewState -> renderViewState(viewState) }

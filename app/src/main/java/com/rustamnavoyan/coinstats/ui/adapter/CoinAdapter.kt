@@ -23,6 +23,8 @@ class CoinAdapter : Adapter<CoinAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
+    var itemClickListener: (CoinUiModel) -> Unit = {}
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_coin, parent, false)
@@ -37,12 +39,18 @@ class CoinAdapter : Adapter<CoinAdapter.ViewHolder>() {
         return items.size
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val icon: ImageView by lazy { itemView.findViewById(R.id.coin_icon) }
         private val name: TextView by lazy { itemView.findViewById(R.id.coin_name) }
         private val changeIn24Hours: TextView by lazy { itemView.findViewById(R.id.coin_change_in_24_hours) }
         private val changeIn24HoursStatusIcon: ImageView by lazy { itemView.findViewById(R.id.coin_change_in_24_hours_status_icon) }
         private val price: TextView by lazy { itemView.findViewById(R.id.coin_price) }
+
+        init {
+            itemView.setOnClickListener {
+                itemClickListener(items[bindingAdapterPosition])
+            }
+        }
 
         fun bind(item: CoinUiModel) {
             Glide.with(icon).load(item.iconUrl).into(icon)

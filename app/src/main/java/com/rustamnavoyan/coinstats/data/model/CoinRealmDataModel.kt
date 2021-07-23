@@ -9,5 +9,6 @@ open class CoinRealmDataModel(
     var name: String = "",
     var iconUrl: String = "",
     var changeIn24Hours: Double = 0.0,
-    var price: Double = 0.0
+    var price: Double = 0.0,
+    var isFavorite: Boolean = false
 ) : RealmObject()
